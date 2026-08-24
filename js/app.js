@@ -1,18 +1,15 @@
-import { candles } from "./market-data.js";
 import { rsi, sma } from "./indicators.js";
 import { deriveLevels } from "./levels-engine.js";
 import { evaluateSignal } from "./signal-engine.js";
 import { toChartData } from "./chart-data.js";
-import { createPaperPortfolio, executeSignal, portfolioSnapshot } from "./trading-simulator.js";
+import { createPaperPortfolio, executeSignal, portfolioSnapshot, recordHypotheticalExit } from "./trading-simulator.js";
+import { createDemoMarketDataProvider } from "./market-data-provider.js";
 
-const closes = candles.map(candle => candle.close);
-const volumes = candles.map(candle => candle.volume);
-const levels = deriveLevels(candles);
-const currentRsi = rsi(closes);
-const signal = evaluateSignal({ candles, levels, rsi: currentRsi, volumeAverage: sma(volumes, 20).at(-1) });
-const data = toChartData({ candles, movingAverageShort: sma(closes, 9), movingAverageLong: sma(closes, 21), rsi: currentRsi, levels, signal });
 const money = value => `$${Math.round(value).toLocaleString("en-US")}`;
 let portfolio = createPaperPortfolio();
+let data;
+let volumes = [];
+const marketDataProvider = createDemoMarketDataProvider();
 
 function setText(id, text) { document.getElementById(id).textContent = text; }
 function renderSummary() {
@@ -33,6 +30,14 @@ function renderSummary() {
   document.getElementById("fomo-factors").replaceChildren(...data.signal.fomoRisk.factors.map(text => Object.assign(document.createElement("li"), { textContent: text })));
   setText("buy-zone", `${money(data.signal.buyZone.low)}–${money(data.signal.buyZone.high)}`);
   setText("exit-zone", `${money(data.signal.exit.low)}–${money(data.signal.exit.high)}`);
+  setText("risk-volatility", `${data.signal.marketRisk.volatilityPercent}%`);
+  setText("risk-support", `${data.signal.marketRisk.supportDistancePercent}%`);
+  setText("risk-resistance", `${data.signal.marketRisk.resistanceDistancePercent}%`);
+  setText("risk-move", `${data.signal.marketRisk.recentMovePercent > 0 ? "+" : ""}${data.signal.marketRisk.recentMovePercent}%`);
+  setText("risk-warning", data.signal.marketRisk.extreme ? "HIGH VOLATILITY - RESEARCH ONLY" : "Research-only market data");
+  setText("conditions-list", data.signal.conditions.map(condition => `${condition.met ? "✓" : "○"} ${condition.label}`).join("  ·  "));
+  setText("chart-symbol", data.symbol);
+  setText("data-source", `${data.source} · Rules-based research signals`);
   renderPortfolio();
 }
 
@@ -46,6 +51,14 @@ function renderPortfolio() {
   setText("trade-detail", snapshot.openPosition
     ? `Entry ${money(portfolio.position.entry)} · Unrealized P/L ${snapshot.unrealizedPnl >= 0 ? "+" : ""}${money(snapshot.unrealizedPnl)}`
     : "Uses the current signal and a virtual $10,000 portfolio.");
+  const history = document.getElementById("trade-history");
+  history.replaceChildren(...portfolio.trades.map(trade => {
+    const row = document.createElement("div");
+    row.className = `trade-row ${trade.side === "SELL" ? "exit" : ""}`;
+    row.innerHTML = `<span>${trade.side} · ${money(trade.price)}</span><strong>${trade.side === "SELL" ? `${trade.pnl >= 0 ? "+" : ""}${money(trade.pnl)}` : money(trade.value)}</strong>`;
+    return row;
+  }));
+  if (!portfolio.trades.length) history.textContent = "No hypothetical trades recorded.";
 }
 
 function runPaperTrade() {
@@ -55,8 +68,42 @@ function runPaperTrade() {
   if (outcome.event) {
     button.textContent = "Position open";
     button.disabled = true;
+    document.getElementById("record-exit").disabled = false;
   }
   renderPortfolio();
+}
+
+function runHypotheticalExit() {
+  const outcome = recordHypotheticalExit(portfolio, data.candles.at(-1).close);
+  portfolio = outcome.portfolio;
+  if (outcome.event) {
+    document.getElementById("run-simulation").textContent = "Record hypothetical entry";
+    document.getElementById("run-simulation").disabled = false;
+    document.getElementById("record-exit").disabled = true;
+  }
+  renderPortfolio();
+}
+
+async function loadSymbol() {
+  const symbol = document.getElementById("symbol-input").value;
+  const market = await marketDataProvider.getCandles(symbol);
+  const closes = market.candles.map(candle => candle.close);
+  volumes = market.candles.map(candle => candle.volume);
+  const levels = deriveLevels(market.candles);
+  const currentRsi = rsi(closes);
+  const signal = evaluateSignal({ candles: market.candles, levels, rsi: currentRsi, volumeAverage: sma(volumes, 20).at(-1) });
+  data = toChartData({
+    candles: market.candles,
+    movingAverageShort: sma(closes, 9),
+    movingAverageLong: sma(closes, 21),
+    rsi: currentRsi,
+    levels,
+    signal,
+    symbol: market.symbol,
+    source: market.source
+  });
+  renderSummary();
+  renderChart();
 }
 
 function renderChart() {
@@ -81,4 +128,9 @@ function renderChart() {
   svg.innerHTML = elements.join("");
 }
 document.getElementById("run-simulation").addEventListener("click", runPaperTrade);
-renderSummary(); renderChart();
+document.getElementById("record-exit").addEventListener("click", runHypotheticalExit);
+document.getElementById("load-symbol").addEventListener("click", loadSymbol);
+document.getElementById("symbol-input").addEventListener("keydown", event => {
+  if (event.key === "Enter") loadSymbol();
+});
+loadSymbol();
