@@ -3,6 +3,7 @@ import { rsi, sma } from "./indicators.js";
 import { deriveLevels } from "./levels-engine.js";
 import { evaluateSignal } from "./signal-engine.js";
 import { toChartData } from "./chart-data.js";
+import { createPaperPortfolio, executeSignal, portfolioSnapshot } from "./trading-simulator.js";
 
 const closes = candles.map(candle => candle.close);
 const volumes = candles.map(candle => candle.volume);
@@ -11,6 +12,7 @@ const currentRsi = rsi(closes);
 const signal = evaluateSignal({ candles, levels, rsi: currentRsi, volumeAverage: sma(volumes, 20).at(-1) });
 const data = toChartData({ candles, movingAverageShort: sma(closes, 9), movingAverageLong: sma(closes, 21), rsi: currentRsi, levels, signal });
 const money = value => `$${Math.round(value).toLocaleString("en-US")}`;
+let portfolio = createPaperPortfolio();
 
 function setText(id, text) { document.getElementById(id).textContent = text; }
 function renderSummary() {
@@ -31,6 +33,30 @@ function renderSummary() {
   document.getElementById("fomo-factors").replaceChildren(...data.signal.fomoRisk.factors.map(text => Object.assign(document.createElement("li"), { textContent: text })));
   setText("buy-zone", `${money(data.signal.buyZone.low)}–${money(data.signal.buyZone.high)}`);
   setText("exit-zone", `${money(data.signal.exit.low)}–${money(data.signal.exit.high)}`);
+  renderPortfolio();
+}
+
+function renderPortfolio() {
+  const current = data.candles.at(-1);
+  const snapshot = portfolioSnapshot(portfolio, current.close);
+  const status = snapshot.openPosition ? "Open BTC position" : "Ready to simulate";
+  setText("paper-equity", money(snapshot.equity));
+  setText("paper-status", status);
+  setText("trade-status", status);
+  setText("trade-detail", snapshot.openPosition
+    ? `Entry ${money(portfolio.position.entry)} · Unrealized P/L ${snapshot.unrealizedPnl >= 0 ? "+" : ""}${money(snapshot.unrealizedPnl)}`
+    : "Uses the current signal and a virtual $10,000 portfolio.");
+}
+
+function runPaperTrade() {
+  const outcome = executeSignal(portfolio, data.signal, data.candles.at(-1));
+  portfolio = outcome.portfolio;
+  const button = document.getElementById("run-simulation");
+  if (outcome.event) {
+    button.textContent = "Position open";
+    button.disabled = true;
+  }
+  renderPortfolio();
 }
 
 function renderChart() {
@@ -54,4 +80,5 @@ function renderChart() {
   elements.push(`<text class="axis" x="${L}" y="${volTop-5}">VOLUME</text><line class="grid" x1="${L}" x2="${W-R}" y1="${rsiTop}" y2="${rsiTop}"/><line class="grid" x1="${L}" x2="${W-R}" y1="${rsiTop+rsiH}" y2="${rsiTop+rsiH}"/><text class="axis" x="${L}" y="${rsiTop-6}">RSI (14)</text><line x1="${L}" x2="${W-R}" y1="${rsiY}" y2="${rsiY}" stroke="#f5b84b" stroke-width="2"/><text class="axis" x="${W-R+7}" y="${rsiY+4}">${data.rsi}</text>`);
   svg.innerHTML = elements.join("");
 }
+document.getElementById("run-simulation").addEventListener("click", runPaperTrade);
 renderSummary(); renderChart();

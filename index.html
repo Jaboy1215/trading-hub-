@@ -25,6 +25,7 @@
         <div><span>24h volume</span><strong id="volume-stat">--</strong><small>Above 20-period average</small></div>
         <div><span>RSI (14)</span><strong id="rsi-stat">--</strong><small id="rsi-label">--</small></div>
         <div><span>Signal score</span><strong id="score-stat">--</strong><small>Algorithmic assessment</small></div>
+        <div><span>Paper portfolio</span><strong id="paper-equity">--</strong><small id="paper-status">Ready to simulate</small></div>
       </section>
 
       <section class="dashboard-grid">
@@ -72,6 +73,14 @@
             <div><span>Buy zone</span><strong id="buy-zone">--</strong></div>
             <div><span>Potential exit</span><strong id="exit-zone">--</strong></div>
           </div>
+          <section class="paper-trading" aria-label="Paper trading simulator">
+            <div>
+              <p class="eyebrow">Paper trading</p>
+              <strong id="trade-status">No simulated position</strong>
+            </div>
+            <button id="run-simulation" type="button">Run paper trade</button>
+            <p id="trade-detail">Uses the current signal and a virtual $10,000 portfolio.</p>
+          </section>
           <p class="disclaimer">Signals are algorithmic observations, not financial advice.</p>
         </aside>
       </section>
