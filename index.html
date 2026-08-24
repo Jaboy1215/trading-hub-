@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trading Hub</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Signal intelligence</p>
+          <h1>Trading Hub</h1>
+        </div>
+        <div class="market-selectors" aria-label="Chart settings">
+          <button class="selector" type="button">BTC / USD <span>⌄</span></button>
+          <button class="selector" type="button">4H <span>⌄</span></button>
+          <span class="live-status"><i></i> Live market</span>
+        </div>
+      </header>
+
+      <section class="overview" aria-label="Market overview">
+        <div><span>Current price</span><strong id="current-price">--</strong><small id="price-change">--</small></div>
+        <div><span>24h volume</span><strong id="volume-stat">--</strong><small>Above 20-period average</small></div>
+        <div><span>RSI (14)</span><strong id="rsi-stat">--</strong><small id="rsi-label">--</small></div>
+        <div><span>Signal score</span><strong id="score-stat">--</strong><small>Algorithmic assessment</small></div>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="chart-card">
+          <div class="card-heading">
+            <div>
+              <h2>BTC / USD</h2>
+              <p>Price action with algorithmic levels and signals</p>
+            </div>
+            <div class="legend" aria-label="Chart legend">
+              <span><b class="candle-key"></b>Candles</span>
+              <span><b class="ma-key"></b>MA 9 / 21</span>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <svg id="price-chart" viewBox="0 0 900 485" role="img" aria-label="Bitcoin candlestick price chart"></svg>
+          </div>
+          <div class="chart-footer"><span>Algorithm-provided support and resistance only</span><span id="chart-time">Updated just now</span></div>
+        </article>
+
+        <aside class="signal-card">
+          <div class="signal-card-header">
+            <span class="eyebrow">Current signal</span>
+            <span id="signal-badge" class="signal-badge">Monitoring</span>
+          </div>
+          <h2 id="signal-title">--</h2>
+          <div class="score-line">
+            <div><span>Score</span><strong id="signal-score">--</strong></div>
+            <div class="score-meter" aria-label="Signal score out of 10"><i id="score-meter-fill"></i></div>
+          </div>
+          <section class="signal-section">
+            <h3>Why</h3>
+            <ul id="signal-reasons"></ul>
+          </section>
+          <section class="signal-section risks">
+            <h3>Risks</h3>
+            <ul id="signal-risks"></ul>
+          </section>
+          <div class="signal-levels">
+            <div><span>Buy zone</span><strong id="buy-zone">--</strong></div>
+            <div><span>Potential exit</span><strong id="exit-zone">--</strong></div>
+          </div>
+          <p class="disclaimer">Signals are algorithmic observations, not financial advice.</p>
+        </aside>
+      </section>
+    </main>
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
