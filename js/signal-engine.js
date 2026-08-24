@@ -5,6 +5,12 @@ export function evaluateSignal({ candles, levels, rsi, volumeAverage }) {
   const momentumImproving = rsi > 50 && rsi < 70;
   const resistanceClose = (levels.resistance.value - current.close) / current.close < .018;
   const elevatedVolatility = (current.high - current.low) / current.close > .006;
+  const momentumExtended = rsi >= 65;
+  const fomoScore =
+    (resistanceClose ? 3 : 0) +
+    (elevatedVolatility ? 2 : 0) +
+    (volumeConfirmed ? 1 : 0) +
+    (momentumExtended ? 2 : 0);
   const score = [nearSupport, volumeConfirmed, momentumImproving].filter(Boolean).length + 4;
 
   return {
@@ -20,6 +26,16 @@ export function evaluateSignal({ candles, levels, rsi, volumeAverage }) {
       resistanceClose && "Resistance is relatively close",
       elevatedVolatility && "Volatility is elevated"
     ].filter(Boolean),
+    fomoRisk: {
+      score: fomoScore,
+      level: fomoScore >= 6 ? "Elevated" : fomoScore >= 3 ? "Moderate" : "Low",
+      factors: [
+        resistanceClose && "Price is approaching the potential exit zone",
+        elevatedVolatility && "Large intraperiod range increases chase risk",
+        volumeConfirmed && "Strong volume can encourage late entries",
+        momentumExtended && "Momentum is becoming extended"
+      ].filter(Boolean)
+    },
     buyZone: levels.support,
     exit: levels.resistance
   };

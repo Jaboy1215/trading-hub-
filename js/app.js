@@ -26,6 +26,9 @@ function renderSummary() {
   setText("signal-score", `${data.signal.score}/10`);
   document.getElementById("score-meter-fill").style.width = `${data.signal.score * 10}%`;
   ["reasons", "risks"].forEach(key => document.getElementById(`signal-${key}`).replaceChildren(...data.signal[key].map(text => Object.assign(document.createElement("li"), { textContent: text }))));
+  setText("fomo-level", data.signal.fomoRisk.level);
+  setText("fomo-score", `${data.signal.fomoRisk.score}/8`);
+  document.getElementById("fomo-factors").replaceChildren(...data.signal.fomoRisk.factors.map(text => Object.assign(document.createElement("li"), { textContent: text })));
   setText("buy-zone", `${money(data.signal.buyZone.low)}–${money(data.signal.buyZone.high)}`);
   setText("exit-zone", `${money(data.signal.exit.low)}–${money(data.signal.exit.high)}`);
 }
