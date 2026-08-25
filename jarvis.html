@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jarvis Brain Center</title>
+    <link rel="stylesheet" href="jarvis.css" />
+  </head>
+  <body>
+    <main class="jarvis-shell">
+      <aside class="sidebar">
+        <div class="brand"><span class="orb"></span><div><strong>JARVIS</strong><small>Brain Center</small></div></div>
+        <nav aria-label="Jarvis sections">
+          <button class="nav-item active" type="button">⌘ <span>Command center</span></button>
+          <button class="nav-item" type="button">◈ <span>Knowledge cloud</span></button>
+          <button class="nav-item" type="button">◎ <span>Agent network</span></button>
+          <button class="nav-item" type="button">◷ <span>Activity log</span></button>
+        </nav>
+        <section class="system-status">
+          <span class="status-dot"></span><div><strong>Local prototype</strong><small>Sample knowledge only</small></div>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <header class="command-header">
+          <div><p class="eyebrow">Connected intelligence</p><h1>Your shared AI knowledge hub</h1></div>
+          <button id="new-request" class="primary" type="button">+ New agent request</button>
+        </header>
+
+        <section class="hero-grid">
+          <article class="brain-card">
+            <div class="brain-top"><div><p class="eyebrow">Brain status</p><h2>Knowledge cloud online</h2></div><span class="live">● Synced</span></div>
+            <div class="brain-visual" aria-label="Knowledge cloud visualization">
+              <span class="node core">J</span><span class="node n1">Code</span><span class="node n2">Docs</span><span class="node n3">Tasks</span><span class="node n4">Data</span>
+              <i class="link l1"></i><i class="link l2"></i><i class="link l3"></i><i class="link l4"></i>
+            </div>
+            <p class="brain-copy">A central, permissioned index where agents can retrieve approved context instead of starting from scratch.</p>
+          </article>
+          <article class="brief-card">
+            <p class="eyebrow">System brief</p><h2 id="brief-title">Ready for an agent request</h2>
+            <p id="brief-copy">Ask an agent to search the local knowledge cloud. This prototype uses sample records and does not connect to external AI accounts.</p>
+            <div class="brief-meta"><span id="brief-source">0 sources selected</span><span>Research mode</span></div>
+          </article>
+        </section>
+
+        <section class="metrics">
+          <article><span>Knowledge records</span><strong id="record-count">--</strong><small>Approved sample items</small></article>
+          <article><span>Available agents</span><strong>04</strong><small>Ready for requests</small></article>
+          <article><span>Connected sources</span><strong>03</strong><small>Local-only in prototype</small></article>
+          <article><span>Access control</span><strong>Scoped</strong><small>Per-agent permissions</small></article>
+        </section>
+
+        <section class="main-grid">
+          <article class="panel knowledge-panel">
+            <div class="panel-heading"><div><p class="eyebrow">Knowledge cloud</p><h2>Search shared context</h2></div><span id="search-count">--</span></div>
+            <label class="search-box"><span>⌕</span><input id="knowledge-search" placeholder="Search architecture, API notes, tasks..." /></label>
+            <div id="knowledge-results" class="knowledge-results"></div>
+          </article>
+          <article class="panel agent-panel">
+            <div class="panel-heading"><div><p class="eyebrow">Agent network</p><h2>Available specialists</h2></div></div>
+            <div class="agents">
+              <div><span class="avatar cyan">C</span><p><strong>Code agent</strong><small>Repository analysis</small></p><i></i></div>
+              <div><span class="avatar violet">R</span><p><strong>Research agent</strong><small>Source synthesis</small></p><i></i></div>
+              <div><span class="avatar amber">D</span><p><strong>Data agent</strong><small>Data quality checks</small></p><i></i></div>
+              <div><span class="avatar green">O</span><p><strong>Ops agent</strong><small>Task coordination</small></p><i></i></div>
+            </div>
+            <button id="ask-agent" class="outline" type="button">Ask an agent to use this context</button>
+          </article>
+        </section>
+      </section>
+    </main>
+    <dialog id="request-dialog">
+      <form method="dialog">
+        <button class="close" value="cancel" aria-label="Close">×</button>
+        <p class="eyebrow">Agent request</p><h2>Send context to an agent</h2>
+        <label>Request<input id="request-input" placeholder="Example: Summarize the API migration decisions" /></label>
+        <label>Agent<select><option>Research agent</option><option>Code agent</option><option>Data agent</option><option>Ops agent</option></select></label>
+        <button id="submit-request" class="primary" value="default">Create research request</button>
+      </form>
+    </dialog>
+    <script type="module" src="js/jarvis.js"></script>
+  </body>
+</html>
