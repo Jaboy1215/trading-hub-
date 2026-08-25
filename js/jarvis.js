@@ -42,4 +42,14 @@ document.getElementById("submit-request").addEventListener("click", event => {
   briefSource.textContent = `${knowledge.length} local sample sources selected`;
   dialog.close();
 });
+
+const startedAt = Date.now();
+setInterval(() => {
+  const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+  const hours = String(Math.floor(elapsed / 3600)).padStart(2, "0");
+  const minutes = String(Math.floor(elapsed % 3600 / 60)).padStart(2, "0");
+  const seconds = String(elapsed % 60).padStart(2, "0");
+  document.getElementById("session-clock").textContent = `${hours}:${minutes}:${seconds}`;
+  document.getElementById("latency").textContent = `${16 + elapsed % 8} ms`;
+}, 1000);
 renderKnowledge();
