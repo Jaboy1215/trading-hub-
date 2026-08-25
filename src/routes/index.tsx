@@ -115,6 +115,7 @@ function HomePage() {
     <main className="jarvis-shell">
       <div className="ambient ambient--one" />
       <div className="ambient ambient--two" />
+      <div className="scanlines" aria-hidden="true" />
 
       <aside className="rail" aria-label="Primary navigation">
         <div className="rail-brand">J</div>
@@ -163,16 +164,22 @@ function HomePage() {
             <div className="orbital-ring orbital-ring--outer" />
             <div className="orbital-ring orbital-ring--middle" />
             <div className="orbital-ring orbital-ring--inner" />
+            <div className="orbital-crosshair orbital-crosshair--horizontal" />
+            <div className="orbital-crosshair orbital-crosshair--vertical" />
             <div className="orbital-core">
               <span>JARVIS</span>
               <small>ONLINE</small>
             </div>
+            <div className="orbital-node orbital-node--one" />
+            <div className="orbital-node orbital-node--two" />
+            <div className="orbital-node orbital-node--three" />
             <div className="orbital-label orbital-label--top">MARKET<br />SENTINEL</div>
             <div className="orbital-label orbital-label--bottom">SCAN<br />READY</div>
           </div>
         </section>
 
         <section className="terminal-panel">
+          <div className="panel-corners" aria-hidden="true" />
           <div className="panel-heading">
             <div>
               <p className="eyebrow">01 / MARKET RECON</p>
@@ -244,6 +251,10 @@ function HomePage() {
                 </span>
               </div>
               <Chart bars={lookup.data?.bars ?? []} />
+              <div className="chart-readout" aria-hidden="true">
+                <span>FEED STABLE</span>
+                <span>DATA INTEGRITY 99.8%</span>
+              </div>
             </article>
           </div>
         </section>
