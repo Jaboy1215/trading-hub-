@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
+import { calculateTechnicalIndicators } from "../indicators/technical-indicators";
 import { getHistoricalDataCached } from "./historical-data-cache";
 import { getMarketDataProvider } from "./provider";
 import { MarketDataError } from "./types";
@@ -49,6 +50,33 @@ export const getHistoricalDataFn = createServerFn({ method: "GET" })
         from: new Date(data.fromIso),
         to: new Date(data.toIso),
       });
+    } catch (error) {
+      toPublicError(error);
+    }
+  });
+
+export const getMarketAnalysisFn = createServerFn({ method: "GET" })
+  .validator((data: unknown) =>
+    z
+      .object({
+        symbol: z.string().min(1).max(20),
+        assetClass: assetClassSchema,
+        timeframe: timeframeSchema,
+        fromIso: z.string().datetime(),
+        toIso: z.string().datetime(),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data }) => {
+    try {
+      const bars = await getHistoricalDataCached(getMarketDataProvider(), {
+        symbol: data.symbol,
+        assetClass: data.assetClass,
+        timeframe: data.timeframe,
+        from: new Date(data.fromIso),
+        to: new Date(data.toIso),
+      });
+      return { bars, indicators: calculateTechnicalIndicators(bars) };
     } catch (error) {
       toPublicError(error);
     }
