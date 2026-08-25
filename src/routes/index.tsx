@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 
 import {
   getAssetInfoFn,
-  getHistoricalDataFn,
+  getMarketAnalysisFn,
   getQuoteFn,
 } from "@/lib/market-data/market-data.functions";
 import type { AssetClass, Bar } from "@/lib/market-data/types";
@@ -76,17 +76,17 @@ function HomePage() {
   const [assetClass, setAssetClass] = useState<AssetClass>("stock");
 
   const getQuote = useServerFn(getQuoteFn);
-  const getHistoricalData = useServerFn(getHistoricalDataFn);
+  const getMarketAnalysis = useServerFn(getMarketAnalysisFn);
   const getAssetInfo = useServerFn(getAssetInfoFn);
 
   const lookup = useMutation({
     mutationFn: async () => {
       const to = new Date();
       const from = new Date(to.getTime() - 30 * 24 * 60 * 60 * 1000);
-      const [quote, info, bars] = await Promise.all([
+      const [quote, info, analysis] = await Promise.all([
         getQuote({ data: { symbol, assetClass } }),
         getAssetInfo({ data: { symbol, assetClass } }),
-        getHistoricalData({
+        getMarketAnalysis({
           data: {
             symbol,
             assetClass,
@@ -96,7 +96,7 @@ function HomePage() {
           },
         }),
       ]);
-      return { quote, info, bars };
+      return { quote, info, ...analysis };
     },
   });
 
@@ -109,6 +109,7 @@ function HomePage() {
     change === undefined || change === null
       ? "AWAITING DATA"
       : `${isPositive ? "+" : ""}${change.toFixed(2)}%`;
+  const indicators = lookup.data?.indicators;
 
   return (
     <main className="jarvis-shell">
@@ -256,15 +257,27 @@ function HomePage() {
           </article>
           <article>
             <span className="telemetry-index">03</span>
-            <p className="eyebrow">STRATEGY MODE</p>
-            <strong>Observation only</strong>
-            <small>Paper-trading safeguards remain active.</small>
+            <p className="eyebrow">MOMENTUM / RSI 14</p>
+            <strong>{indicators?.rsi14?.toFixed(1) ?? "Awaiting scan"}</strong>
+            <small>
+              {indicators?.rsi14 === undefined || indicators.rsi14 === null
+                ? "Requires 15 daily bars."
+                : indicators.rsi14 >= 70
+                  ? "Elevated momentum. Review risk."
+                  : indicators.rsi14 <= 30
+                    ? "Lower momentum. Review context."
+                    : "Momentum is within the middle range."}
+            </small>
           </article>
           <article>
             <span className="telemetry-index">04</span>
-            <p className="eyebrow">SIGNAL ENGINE</p>
-            <strong>Calibrating</strong>
-            <small>Technical analysis arrives in Phase 3.</small>
+            <p className="eyebrow">TREND / SMA 20</p>
+            <strong>{indicators?.trend?.toUpperCase() ?? "Awaiting scan"}</strong>
+            <small>
+              {indicators?.sma20 === null || indicators?.sma20 === undefined
+                ? "Requires 20 daily bars."
+                : `SMA ${formatPrice(indicators.sma20)} | ATR ${indicators.atr14 === null ? "--" : formatPrice(indicators.atr14)}`}
+            </small>
           </article>
         </section>
       </section>

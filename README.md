@@ -9,7 +9,7 @@ claim.
 never place a real trade unless that's explicitly built and authorized
 later.**
 
-## Status: Phase 2 of 10 (see Development phases below)
+## Status: Phase 3 of 10 (see Development phases below)
 
 ## Stack
 
@@ -49,6 +49,12 @@ re-spend the daily request budget on data already fetched.
 API keys are read server-side only (`process.env`, inside a TanStack
 Start server function) and never shipped to the browser bundle.
 
+## Technical indicators
+
+The Phase 3 analysis endpoint derives 20-period SMA and EMA, 14-period RSI,
+and 14-period ATR from cached daily bars. It reports descriptive trend and
+momentum context only; indicators are not trade recommendations or guarantees.
+
 ## Jarvis cloud memory
 
 Jarvis can persist research context in a server-only Supabase container. Apply
@@ -65,8 +71,8 @@ This is being built in phases, each verified (tests + a real run) before
 moving to the next:
 
 1. ~~Repository audit + architecture~~
-2. **Market-data integration** ← current
-3. Technical indicators
+2. ~~Market-data integration~~
+3. **Technical indicators** ← current
 4. Support/resistance engine
 5. Signal engine
 6. Chart/dashboard
