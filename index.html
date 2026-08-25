@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MemeChart Lab</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Paper-only market research</p>
+          <h1>MemeChart Lab</h1>
+        </div>
+        <div class="market-selectors" aria-label="Chart settings">
+          <label class="symbol-input"><span class="sr-only">Crypto symbol</span><input id="symbol-input" value="PEPE / USD" aria-label="Crypto symbol" /><button id="load-symbol" type="button">Load</button></label>
+          <button class="selector" type="button">4H <span>⌄</span></button>
+          <span class="live-status"><i></i> Demo data</span>
+        </div>
+      </header>
+      <nav class="page-nav" aria-label="App sections">
+        <button class="active" type="button">Dashboard</button><button type="button">Chart</button><button type="button">Watchlist</button><button type="button">Paper Portfolio</button><button type="button">Signal History</button><button type="button">Settings</button>
+      </nav>
+
+      <section class="overview" aria-label="Market overview">
+        <div><span>Current price</span><strong id="current-price">--</strong><small id="price-change">--</small></div>
+        <div><span>24h volume</span><strong id="volume-stat">--</strong><small>Above 20-period average</small></div>
+        <div><span>RSI (14)</span><strong id="rsi-stat">--</strong><small id="rsi-label">--</small></div>
+        <div><span>Signal score</span><strong id="score-stat">--</strong><small>Algorithmic assessment</small></div>
+        <div><span>Paper portfolio</span><strong id="paper-equity">--</strong><small id="paper-status">Ready to simulate</small></div>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="chart-card">
+          <div class="card-heading">
+            <div>
+              <h2 id="chart-symbol">PEPE / USD</h2>
+              <p id="data-source">Price action with rules-based research signals</p>
+            </div>
+            <div class="legend" aria-label="Chart legend">
+              <span><b class="candle-key"></b>Candles</span>
+              <span><b class="ma-key"></b>MA 9 / 21</span>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <svg id="price-chart" viewBox="0 0 900 485" role="img" aria-label="Bitcoin candlestick price chart"></svg>
+          </div>
+          <div class="chart-footer"><span>Algorithm-provided support and resistance only</span><span id="chart-time">Updated just now</span></div>
+        </article>
+
+        <aside class="signal-card">
+          <div class="signal-card-header">
+            <span class="eyebrow">Current signal</span>
+            <span id="signal-badge" class="signal-badge">Monitoring</span>
+          </div>
+          <h2 id="signal-title">--</h2>
+          <div class="score-line">
+            <div><span>Score</span><strong id="signal-score">--</strong></div>
+            <div class="score-meter" aria-label="Signal score out of 10"><i id="score-meter-fill"></i></div>
+          </div>
+          <section class="signal-section">
+            <h3>Why</h3>
+            <ul id="signal-reasons"></ul>
+          </section>
+          <section class="signal-section risks">
+            <h3>Risks</h3>
+            <ul id="signal-risks"></ul>
+          </section>
+          <section class="fomo-risk" aria-label="FOMO risk assessment">
+            <div><span>FOMO risk</span><strong id="fomo-level">--</strong></div>
+            <strong id="fomo-score">--</strong>
+          </section>
+          <ul id="fomo-factors" class="fomo-factors"></ul>
+          <section class="risk-panel" aria-label="Meme coin risk panel">
+            <h3>Meme-coin risk</h3>
+            <div class="risk-metrics">
+              <span>Volatility <strong id="risk-volatility">--</strong></span>
+              <span>From support <strong id="risk-support">--</strong></span>
+              <span>To resistance <strong id="risk-resistance">--</strong></span>
+              <span>Recent move <strong id="risk-move">--</strong></span>
+            </div>
+            <p id="risk-warning"></p>
+          </section>
+          <div class="signal-levels">
+            <div><span>Buy zone</span><strong id="buy-zone">--</strong></div>
+            <div><span>Potential exit</span><strong id="exit-zone">--</strong></div>
+          </div>
+          <section class="paper-trading" aria-label="Paper trading simulator">
+            <div>
+              <p class="eyebrow">Paper trading</p>
+              <strong id="trade-status">No simulated position</strong>
+            </div>
+            <button id="run-simulation" type="button">Record hypothetical entry</button>
+            <button id="record-exit" type="button" disabled>Record hypothetical exit</button>
+            <p id="trade-detail">Uses the current signal and a virtual $10,000 portfolio.</p>
+          </section>
+          <p class="disclaimer">Signals are algorithmic observations, not financial advice.</p>
+        </aside>
+      </section>
+      <section class="history-card" aria-label="Signal and paper-trade history">
+        <div><p class="eyebrow">Signal history</p><h2>Rules audit trail</h2><p id="conditions-list">--</p></div>
+        <div><p class="eyebrow">Paper-trade history</p><div id="trade-history">No hypothetical trades recorded.</div></div>
+      </section>
+    </main>
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
