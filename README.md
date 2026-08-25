@@ -49,6 +49,16 @@ re-spend the daily request budget on data already fetched.
 API keys are read server-side only (`process.env`, inside a TanStack
 Start server function) and never shipped to the browser bundle.
 
+## Jarvis cloud memory
+
+Jarvis can persist research context in a server-only Supabase container. Apply
+`supabase/migrations/20260824_create_jarvis_memory.sql` in the Supabase SQL
+editor, then set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in `.env`.
+Optionally set `JARVIS_MEMORY_CONTAINER` to isolate environments. The service
+role key is intentionally never exposed to browser code; call
+`rememberJarvisMemory` and `recallJarvisMemories` only from trusted
+server-side Jarvis code.
+
 ## Development phases
 
 This is being built in phases, each verified (tests + a real run) before
