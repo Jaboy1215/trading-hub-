@@ -49,6 +49,15 @@ re-spend the daily request budget on data already fetched.
 API keys are read server-side only (`process.env`, inside a TanStack
 Start server function) and never shipped to the browser bundle.
 
+## What I learned
+
+Building Trading Hub helped me understand how market data moves between
+services: a provider API returns data, application code manages it, and
+SQLite stores price history so it can be reused. I also learned why
+keeping API keys on the server and documenting setup steps matter. The
+application is currently in Phase 2; later signal, charting, backtesting,
+and trading features remain planned.
+
 ## Development phases
 
 This is being built in phases, each verified (tests + a real run) before
